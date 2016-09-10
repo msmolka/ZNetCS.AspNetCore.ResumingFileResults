@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "packOptions": {
+    "owners": [ "Marcin Smółka" ],
+    "licenseUrl": "https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults/master/LICENSE",
+    "projectUrl": "https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults"
+    },
+    "tags": [
+      "aspnetcore",
+      "action result",
+      "ASP.NET MVC"
+    ]
+  },
+  "description": "Extension to FileResult to allow resume.",
+  "authors": [ "Marcin Smółka" ],
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": true,
+    "additionalArguments": [ "/ruleset:../../CommonRuleSet.ruleset", "/additionalfile:../../stylecop.json" ]
+  },
+
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Net.Http.Headers": "1.0.0",
+    "StyleCop.Analyzers": {
+      "version": "1.0.0",
+      "type": "build"
+    },
+    "System.Diagnostics.Tools": "*"
+  },
+
+  "frameworks": {
+    "net451": {},
+    "netstandard1.6": {}
+  }
+
+}
