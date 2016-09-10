@@ -11,7 +11,8 @@
     "tags": [
       "aspnetcore",
       "action result",
-      "ASP.NET MVC"
+      "ASP.NET MVC",
+      "resuming"
     ]
   },
   "description": "Extension to FileResult to allow resume.",
