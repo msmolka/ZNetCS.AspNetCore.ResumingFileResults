@@ -1,5 +1,7 @@
 # ZNetCS.AspNetCore.ResumingFileResults
 
+[![NuGet](https://img.shields.io/nuget/v/ZNetCS.AspNetCore.ResumingFileResults.svg)](https://www.nuget.org/packages/ZNetCS.AspNetCore.ResumingFileResults/)
+
 A small package to allow using resume during transfering data over MVC application in ASP.NET Core. 
 
 It allows provide `Etag` header as well as `Last-Modified` one. It also supports following precodition headers: `If-Match`, `If-None-Match`, `If-Modified-Since`, `If-Unmodified-Since`, `If-Range`.
