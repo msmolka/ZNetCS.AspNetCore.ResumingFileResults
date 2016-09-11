@@ -93,7 +93,11 @@ Additionaly it is possible provide `Etag` and `LastModified` headers.
 ```csharp
 public IActionResult File()
 {
-    return new ResumingVirtualFileResult("TestFile.txt", "text/plain", "\"MyEtagHeader\"") { FileDownloadName = "TestFile.txt", LastModified = DateTimeOffset.Now };
+    return new ResumingVirtualFileResult("TestFile.txt", "text/plain", "\"MyEtagHeader\"") 
+	{ 
+		FileDownloadName = "TestFile.txt", 
+		LastModified = DateTimeOffset.Now 
+	};
 }
 ```
 
