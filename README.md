@@ -1,6 +1,6 @@
 # ZNetCS.AspNetCore.ResumingFileResults
 
-[![NuGet](https://img.shields.io/nuget/v/ZNetCS.AspNetCore.ResumingFileResults.svg)](https://www.nuget.org/packages/ZNetCS.AspNetCore.ResumingFileResults/)
+[![NuGet](https://img.shields.io/nuget/v/ZNetCS.AspNetCore.ResumingFileResults.svg)](https://www.nuget.org/packages/ZNetCS.AspNetCore.ResumingFileResults)
 
 A small package to allow using resume during transfering data over MVC application in ASP.NET Core. 
 
