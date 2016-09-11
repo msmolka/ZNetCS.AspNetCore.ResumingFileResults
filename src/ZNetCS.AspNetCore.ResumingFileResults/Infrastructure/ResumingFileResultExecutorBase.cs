@@ -239,7 +239,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             CancellationToken cancellationToken = default(CancellationToken))
         {
             HttpStatusCode? statusCode;
-            this.SetCommonHeaders(context, result);
+            this.SetDefaultHeaders(context, result);
 
             if (!this.CheckPrecondition(context, result, out statusCode))
             {
@@ -341,10 +341,24 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// <param name="context">
         /// The action context to access response.
         /// </param>
+        /// <param name="length">
+        /// The length of response.
+        /// </param>
+        protected virtual void SetContentLengthHeader(ActionContext context, long length)
+        {
+            context.HttpContext.Response.Headers[HeaderNames.ContentLength] = HeaderUtilities.FormatInt64(length);
+        }
+
+        /// <summary>
+        /// Sets default headers for the response.
+        /// </summary>
+        /// <param name="context">
+        /// The action context to access response.
+        /// </param>
         /// <param name="result">
         /// The action result to process.
         /// </param>
-        protected virtual void SetCommonHeaders(ActionContext context, ResumingFileResult result)
+        protected virtual void SetDefaultHeaders(ActionContext context, ResumingFileResult result)
         {
             this.SetHeadersAndLog(context, result);
 
@@ -369,20 +383,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             {
                 headers[HeaderNames.LastModified] = HeaderUtilities.FormatDate(result.LastModified.Value);
             }
-        }
-
-        /// <summary>
-        /// Sets common headers for the response.
-        /// </summary>
-        /// <param name="context">
-        /// The action context to access response.
-        /// </param>
-        /// <param name="length">
-        /// The length of response.
-        /// </param>
-        protected virtual void SetContentLengthHeader(ActionContext context, long length)
-        {
-            context.HttpContext.Response.Headers[HeaderNames.ContentLength] = HeaderUtilities.FormatInt64(length);
         }
 
         /// <summary>

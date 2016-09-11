@@ -15,7 +15,7 @@
       "resuming"
     ]
   },
-  "description": "Extension to FileResult to allow resume.",
+  "description": "A small package to allow using resume during transfering data over MVC application in ASP.NET Core.",
   "authors": [ "Marcin Smółka" ],
   "buildOptions": {
     "warningsAsErrors": true,
