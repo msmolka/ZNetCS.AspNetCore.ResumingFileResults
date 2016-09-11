@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "dependencies": {
     "ZNetCS.AspNetCore.ResumingFileResults": {
-      "version": "1.0.0",
+      "version": "*",
       "target": "project"
     },
     "Microsoft.NETCore.App": {

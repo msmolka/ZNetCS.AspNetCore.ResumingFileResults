@@ -261,6 +261,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             }
             else
             {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.PartialContent;
+
                 long streamLength = inputStream.Length;
                 var ranges = this.GetRequestRanges(context, streamLength);
                 if (ranges.Count == 0)

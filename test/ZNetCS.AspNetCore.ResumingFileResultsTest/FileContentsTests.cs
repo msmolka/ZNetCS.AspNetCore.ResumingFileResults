@@ -11,6 +11,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 {
     #region Usings
 
+    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -117,11 +118,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/true/true");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("0", responseString, "should be first byte");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
@@ -141,11 +142,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/true/false");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("0", responseString, "should be first byte");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
@@ -165,11 +166,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/true/true");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
@@ -189,11 +190,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/true/false");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
@@ -213,11 +214,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/false/true");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
@@ -237,11 +238,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/false/false");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.IsNull(response.Headers.ETag, "ETag != null");

@@ -12,6 +12,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
     #region Usings
 
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
@@ -40,7 +41,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/true");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -61,6 +61,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             expected.AppendLine($"--{boundary}--");
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual(expected.ToString(), responseString, "should be multipart boundary response");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
@@ -79,7 +80,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/virtual/true/true");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -105,6 +105,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             expected.AppendLine($"--{boundary}--");
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual(expected.ToString(), responseString, "should be multipart boundary response");
             Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
