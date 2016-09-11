@@ -11,8 +11,10 @@
     "tags": [
       "aspnetcore",
       "action result",
-      "ASP.NET MVC",
-      "resuming"
+      "ASP.NET MVC",      
+      "resuming",
+      "byte range",
+      "partial"
     ]
   },
   "description": "A small package to allow using resume during transfering data over MVC application in ASP.NET Core.",
