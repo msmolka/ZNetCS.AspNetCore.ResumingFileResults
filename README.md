@@ -4,7 +4,7 @@
 
 A small package to allow using resume during transfering data over MVC application in ASP.NET Core. 
 
-It allows provide `Etag` header as well as `Last-Modified` one. It also supports following precodition headers: `If-Match`, `If-None-Match`, `If-Modified-Since`, `If-Unmodified-Since`, `If-Range`.
+It allows provide `Etag` header as well as `Last-Modified` one. It also supports following precondition headers: `If-Match`, `If-None-Match`, `If-Modified-Since`, `If-Unmodified-Since`, `If-Range`.
 
 
 ## Installing 
