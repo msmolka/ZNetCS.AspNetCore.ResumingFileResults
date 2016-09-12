@@ -12,7 +12,7 @@
       "aspnetcore",
       "aspnetcoremvc",
       "actionresult",
-      "ASP.NET",      
+      "ASP.NET",
       "MVC",
       "resuming",
       "byterange",
@@ -20,6 +20,7 @@
     ]
   },
   "description": "A small package to allow using resume during transfering data over MVC application in ASP.NET Core.",
+  "copyright": "Marcin Smółka zNET Computer Solutions",
   "authors": [ "Marcin Smółka" ],
   "buildOptions": {
     "warningsAsErrors": true,
