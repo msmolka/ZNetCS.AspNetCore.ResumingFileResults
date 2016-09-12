@@ -261,8 +261,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             }
             else
             {
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.PartialContent;
-
                 long streamLength = inputStream.Length;
                 var ranges = this.GetRequestRanges(context, streamLength);
                 if (ranges.Count == 0)
@@ -277,6 +275,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                 }
                 else
                 {
+                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.PartialContent;
+
                     // here will be partial result
                     using (inputStream)
                     {
@@ -554,20 +554,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             #region Public Methods
 
             /// <summary>
-            /// For easier debugging.
-            /// </summary>
-            public override string ToString()
-            {
-                return $"{this.From}-{this.To}/{this.Length}";
-            }
-
-            #endregion
-
-            #region Implemented Interfaces
-
-            #region ICloneable
-
-            /// <summary>
             /// Clones current range object.
             /// </summary>
             /// <returns>
@@ -582,7 +568,13 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                 };
             }
 
-            #endregion
+            /// <summary>
+            /// For easier debugging.
+            /// </summary>
+            public override string ToString()
+            {
+                return $"{this.From}-{this.To}/{this.Length}";
+            }
 
             #endregion
         }

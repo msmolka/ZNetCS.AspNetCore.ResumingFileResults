@@ -41,6 +41,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/true");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -63,7 +64,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual(expected.ToString(), responseString, "should be multipart boundary response");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -80,6 +81,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/virtual/true/true");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -107,7 +109,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual(expected.ToString(), responseString, "should be multipart boundary response");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");

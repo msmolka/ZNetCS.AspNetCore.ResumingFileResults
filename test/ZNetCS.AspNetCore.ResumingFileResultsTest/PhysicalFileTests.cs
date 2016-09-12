@@ -40,8 +40,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
             Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -60,8 +61,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
             Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -80,8 +82,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
             Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
@@ -100,8 +103,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
             Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
@@ -118,13 +122,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/true");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
-            // Assert
+            // Assert            
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("0", responseString, "should be first byte");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 0-0/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 0-0/62");
@@ -142,13 +147,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/false");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("0", responseString, "should be first byte");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 0-0/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 0-0/62");
@@ -166,13 +172,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/true");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
@@ -190,13 +197,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/false");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
@@ -214,13 +222,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/false/true");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
@@ -238,13 +247,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/false/false");
+            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("1", responseString, "should be second byte");
-            Assert.IsNotNull(response.Headers.AcceptRanges, "AcceptRanges != null");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
