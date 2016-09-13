@@ -11,6 +11,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 {
     #region Usings
 
+    using System;
     using System.IO;
     using System.Net.Http;
 
@@ -58,6 +59,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// Gets the entity tag.
         /// </summary>
         public EntityTagHeaderValue EntityTag { get; } = new EntityTagHeaderValue("\"TestFile\"");
+
+        /// <summary>
+        /// Gets the last modified.
+        /// </summary>
+        public DateTimeOffset LastModified { get; } = new DateTimeOffset(2016, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         /// <summary>
         /// Gets the server.

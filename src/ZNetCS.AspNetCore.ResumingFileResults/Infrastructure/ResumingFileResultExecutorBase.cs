@@ -90,8 +90,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                     }
 
                     // TODO: Replace with compare method when released.
-                    if ((result.EntityTag == null) || !entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any))
-                        || !entityTagHeaderValues.Any(e => e.Equals(result.EntityTag) && !e.IsWeak && !result.EntityTag.IsWeak))
+                    if ((result.EntityTag == null) || !(entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)) ||
+                        entityTagHeaderValues.Any(e => e.Equals(result.EntityTag) && !e.IsWeak && !result.EntityTag.IsWeak)))
                     {
                         statusCode = HttpStatusCode.PreconditionFailed;
                         return false;
@@ -143,7 +143,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                     // TODO: Replace with compare method when released.
                     if ((result.EntityTag != null)
                         && (entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any))
-                            || !entityTagHeaderValues.Any(e => e.Tag.Equals(result.EntityTag.Tag, StringComparison.Ordinal))))
+                            || entityTagHeaderValues.Any(e => e.Tag.Equals(result.EntityTag.Tag, StringComparison.Ordinal))))
                     {
                         statusCode = (context.HttpContext.Request.Method == "GET") || (context.HttpContext.Request.Method == "HEAD")
                             ? HttpStatusCode.NotModified
@@ -186,29 +186,27 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                 // second request.  Informally, its meaning is as follows: if the
                 // representation is unchanged, send me the part(s)that I am requesting
                 // in Range; otherwise, send me the entire representation.
-                if (result.LastModified.HasValue || (result.EntityTag != null))
+                RangeConditionHeaderValue rangeConditionHeaderValue;
+                if (RangeConditionHeaderValue.TryParse(ifRangeValue, out rangeConditionHeaderValue))
                 {
-                    RangeConditionHeaderValue rangeConditionHeaderValue;
-                    if (RangeConditionHeaderValue.TryParse(ifRangeValue, out rangeConditionHeaderValue))
+                    if (rangeConditionHeaderValue.LastModified.HasValue)
                     {
-                        if (result.LastModified.HasValue && rangeConditionHeaderValue.LastModified.HasValue)
+                        if (!result.LastModified.HasValue || result.LastModified.Value > rangeConditionHeaderValue.LastModified)
                         {
-                            if (result.LastModified.Value > rangeConditionHeaderValue.LastModified)
-                            {
-                                // the content changed so send whole content
-                                return false;
-                            }
+                            // the content changed so send whole content
+                            return false;
                         }
-                        else if ((result.EntityTag != null) && (rangeConditionHeaderValue.EntityTag != null))
+                    }
+                    else if (rangeConditionHeaderValue.EntityTag != null)
+                    {
+                        // A client MUST NOT generate an If-Range header field containing an entity - tag that is marked as weak.
+                        // A server that evaluates an If-Range precondition MUST use the strong comparison function when comparing entity-tags.
+                        // TODO: Replace with compare method when released.
+                        if (result.EntityTag == null || rangeConditionHeaderValue.EntityTag.IsWeak || result.EntityTag.IsWeak
+                            || !rangeConditionHeaderValue.EntityTag.Equals(result.EntityTag))
                         {
-                            // A client MUST NOT generate an If-Range header field containing an entity - tag that is marked as weak.
-                            // A server that evaluates an If-Range precondition MUST use the strong comparison function when comparing entity-tags.
-                            // TODO: Replace with compare method when released.
-                            if (!rangeConditionHeaderValue.EntityTag.IsWeak && !rangeConditionHeaderValue.EntityTag.Equals(result.EntityTag))
-                            {
-                                // not matched so send whole content
-                                return false;
-                            }
+                            // not matched so send whole content
+                            return false;
                         }
                     }
                 }

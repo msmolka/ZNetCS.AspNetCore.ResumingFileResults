@@ -11,6 +11,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
 {
     #region Usings
 
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
 
@@ -43,6 +44,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         /// </summary>
         private readonly IHostingEnvironment hostingEnvironment;
 
+        /// <summary>
+        /// The last modified.
+        /// </summary>
+        private readonly DateTimeOffset lastModified = new DateTimeOffset(2016, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
         #endregion
 
         #region Constructors and Destructors
@@ -72,7 +78,33 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
             string webRoot = this.hostingEnvironment.WebRootPath;
             var contents = System.IO.File.ReadAllBytes(Path.Combine(webRoot, "TestFile.txt"));
 
-            return this.ResumingFile(contents, "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+            ResumingFileContentResult result = this.ResumingFile(contents, "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+            result.LastModified = this.lastModified;
+            return result;
+        }
+
+        /// <summary>
+        /// The file.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
+        [HttpHead("file")]
+        public IActionResult FileHead()
+        {
+            ResumingVirtualFileResult result = this.ResumingFile("TestFile.txt", "text/plain", "TestFile.txt", EntityTag);
+            result.LastModified = this.lastModified;
+            return result;
+        }
+
+        /// <summary>
+        /// The file.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
+        [HttpPut("file")]
+        public IActionResult FilePut()
+        {
+            ResumingVirtualFileResult result = this.ResumingFile("TestFile.txt", "text/plain", "TestFile.txt", EntityTag);
+            result.LastModified = this.lastModified;
+            return result;
         }
 
         /// <summary>
@@ -84,7 +116,10 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         {
             string webRoot = this.hostingEnvironment.WebRootPath;
             FileStream stream = System.IO.File.OpenRead(Path.Combine(webRoot, "TestFile.txt"));
-            return this.ResumingFile(stream, "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+
+            ResumingFileStreamResult result = this.ResumingFile(stream, "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+            result.LastModified = this.lastModified;
+            return result;
         }
 
         /// <summary>
@@ -104,7 +139,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         public IActionResult PhysicalFile(bool fileName, bool etag)
         {
             string webRoot = this.hostingEnvironment.WebRootPath;
-            return this.ResumingPhysicalFile(Path.Combine(webRoot, "TestFile.txt"), "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+
+            ResumingPhysicalFileResult result = this.ResumingPhysicalFile(
+                Path.Combine(webRoot, "TestFile.txt"),
+                "text/plain",
+                fileName ? "TestFile.txt" : null,
+                etag ? EntityTag : null);
+            result.LastModified = this.lastModified;
+            return result;
         }
 
         /// <summary>
@@ -114,7 +156,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         [HttpGet("virtual/{fileName}/{etag}")]
         public IActionResult VirtualFile(bool fileName, bool etag)
         {
-            return this.ResumingFile("TestFile.txt", "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+            ResumingVirtualFileResult result = this.ResumingFile("TestFile.txt", "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
+            result.LastModified = this.lastModified;
+            return result;
         }
 
         #endregion

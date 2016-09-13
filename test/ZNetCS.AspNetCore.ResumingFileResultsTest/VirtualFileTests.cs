@@ -126,7 +126,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
             string responseString = await response.Content.ReadAsStringAsync();
 
-            // Assert            
+            // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual("0", responseString, "should be first byte");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");

@@ -23,7 +23,7 @@ When you install the package, it should be added to your `package.json`. Alterna
 ```json
 {
   "dependencies" : {
-    "ZNetCS.AspNetCore.ResumingFileResults": "1.0.2"
+    "ZNetCS.AspNetCore.ResumingFileResults": "1.0.3"
   }
 }
 ```
