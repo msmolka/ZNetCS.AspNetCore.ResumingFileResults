@@ -9,7 +9,6 @@
 
 #region Usings
 
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -22,5 +21,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCopyright("Copyright © Marcin Smółka zNET Computer Solutions 2016")]
 [assembly: ComVisible(false)]
-[assembly: CLSCompliant(false)]
 [assembly: Guid("1fb1d393-5b9f-4ad1-bb16-9ebe44732ff1")]

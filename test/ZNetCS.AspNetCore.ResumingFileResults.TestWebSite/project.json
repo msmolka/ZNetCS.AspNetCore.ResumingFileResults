@@ -1,15 +1,17 @@
 {
   "version": "1.0.0",
   "dependencies": {
-    "ZNetCS.AspNetCore.ResumingFileResults": {
-      "version": "*",
-      "target": "project"
-    },
     "Microsoft.NETCore.App": {
       "version": "1.0.1",
       "type": "platform"
     },
+    "ZNetCS.AspNetCore.ResumingFileResults": {
+      "version": "*",
+      "target": "project"
+    },
+    "Microsoft.AspNetCore.Mvc": "1.0.1",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
@@ -21,9 +23,7 @@
     "StyleCop.Analyzers": {
       "version": "1.0.0",
       "type": "build"
-    },
-    "Microsoft.AspNetCore.Mvc": "1.0.1",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1"
+    }
   },
 
   "tools": {
