@@ -50,7 +50,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         #region Methods
 
         /// <summary>
-        /// Checks if range is supported in current request after evaluating the precondition header fields.
+        /// Evaluates the precondition header fields.
         /// </summary>
         /// <param name="context">
         /// The action context to access request.
@@ -65,10 +65,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// See RFC 7232 https://tools.ietf.org/html/rfc7232.
         /// See point 6 for precedence.
         /// </remarks>
-        protected virtual bool CheckPrecondition(ActionContext context, ResumingFileResult result, out HttpStatusCode? statusCode)
+        protected virtual bool CheckDefaultPrecondition(ActionContext context, ResumingFileResult result, out HttpStatusCode? statusCode)
         {
-            statusCode = null;
-
             // An origin server that receives an If-Match header field MUST evaluate
             // the condition prior to performing the method. If the field - value is "*",
             // the condition is false if the origin server does not have a current representation
@@ -91,7 +89,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
 
                     // TODO: Replace with compare method when released.
                     if ((result.EntityTag == null) || !(entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)) ||
-                        entityTagHeaderValues.Any(e => e.Equals(result.EntityTag) && !e.IsWeak && !result.EntityTag.IsWeak)))
+                                                        entityTagHeaderValues.Any(e => e.Equals(result.EntityTag) && !e.IsWeak && !result.EntityTag.IsWeak)))
                     {
                         statusCode = HttpStatusCode.PreconditionFailed;
                         return false;
@@ -177,37 +175,58 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                 }
             }
 
+            statusCode = null;
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if range is supported in current request and evaluate the range precondition header field.
+        /// </summary>
+        /// <param name="context">
+        /// The action context to access request.
+        /// </param>
+        /// <param name="result">
+        /// The file result to perform precondition check.
+        /// </param>
+        /// <remarks>
+        /// See RFC 7232 https://tools.ietf.org/html/rfc7232.
+        /// See point 6 for precedence.
+        /// </remarks>
+        protected virtual bool CheckRangePrecondition(ActionContext context, ResumingFileResult result)
+        {
             // When the method is GET and both Range and If-Range are present, evaluate the If-Range precondition
             string ifRangeValue = context.HttpContext.Request.Headers[HeaderNames.IfRange];
-            if ((context.HttpContext.Request.Method == "GET") && !string.IsNullOrWhiteSpace(ifRangeValue)
-                && !string.IsNullOrWhiteSpace(context.HttpContext.Request.Headers[HeaderNames.Range]))
+            if ((context.HttpContext.Request.Method != "GET") || string.IsNullOrWhiteSpace(ifRangeValue)
+                || string.IsNullOrWhiteSpace(context.HttpContext.Request.Headers[HeaderNames.Range]))
             {
-                // The "If-Range" header field allows a client to "short-circuit" the
-                // second request.  Informally, its meaning is as follows: if the
-                // representation is unchanged, send me the part(s)that I am requesting
-                // in Range; otherwise, send me the entire representation.
-                RangeConditionHeaderValue rangeConditionHeaderValue;
-                if (RangeConditionHeaderValue.TryParse(ifRangeValue, out rangeConditionHeaderValue))
+                return true;
+            }
+
+            // The "If-Range" header field allows a client to "short-circuit" the
+            // second request.  Informally, its meaning is as follows: if the
+            // representation is unchanged, send me the part(s)that I am requesting
+            // in Range; otherwise, send me the entire representation.
+            RangeConditionHeaderValue rangeConditionHeaderValue;
+            if (RangeConditionHeaderValue.TryParse(ifRangeValue, out rangeConditionHeaderValue))
+            {
+                if (rangeConditionHeaderValue.LastModified.HasValue)
                 {
-                    if (rangeConditionHeaderValue.LastModified.HasValue)
+                    if (!result.LastModified.HasValue || (result.LastModified.Value > rangeConditionHeaderValue.LastModified))
                     {
-                        if (!result.LastModified.HasValue || result.LastModified.Value > rangeConditionHeaderValue.LastModified)
-                        {
-                            // the content changed so send whole content
-                            return false;
-                        }
+                        // the content changed so send whole content
+                        return false;
                     }
-                    else if (rangeConditionHeaderValue.EntityTag != null)
+                }
+                else if (rangeConditionHeaderValue.EntityTag != null)
+                {
+                    // A client MUST NOT generate an If-Range header field containing an entity - tag that is marked as weak.
+                    // A server that evaluates an If-Range precondition MUST use the strong comparison function when comparing entity-tags.
+                    // TODO: Replace with compare method when released.
+                    if ((result.EntityTag == null) || rangeConditionHeaderValue.EntityTag.IsWeak || result.EntityTag.IsWeak
+                        || !rangeConditionHeaderValue.EntityTag.Equals(result.EntityTag))
                     {
-                        // A client MUST NOT generate an If-Range header field containing an entity - tag that is marked as weak.
-                        // A server that evaluates an If-Range precondition MUST use the strong comparison function when comparing entity-tags.
-                        // TODO: Replace with compare method when released.
-                        if (result.EntityTag == null || rangeConditionHeaderValue.EntityTag.IsWeak || result.EntityTag.IsWeak
-                            || !rangeConditionHeaderValue.EntityTag.Equals(result.EntityTag))
-                        {
-                            // not matched so send whole content
-                            return false;
-                        }
+                        // not matched so send whole content
+                        return false;
                     }
                 }
             }
@@ -239,97 +258,96 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             HttpStatusCode? statusCode;
             this.SetDefaultHeaders(context, result);
 
-            if (!this.CheckPrecondition(context, result, out statusCode))
+            if (!this.CheckDefaultPrecondition(context, result, out statusCode))
             {
-                // status code not null, so just return result
-                if (statusCode != null)
-                {
-                    new StatusCodeResult((int)statusCode.Value).ExecuteResult(context);
-                }
-                else
-                {
-                    this.SetContentLengthHeader(context, inputStream.Length);
+                // ReSharper disable once PossibleInvalidOperationException
+                await new StatusCodeResult((int)statusCode.Value).ExecuteResultAsync(context);
+                return;
+            }
 
-                    // means if-range failed so just return whole file.
-                    using (inputStream)
-                    {
-                        await this.WriteContentAsync(context, inputStream, 0, null, cancellationToken);
-                    }
+            if (!this.CheckRangePrecondition(context, result))
+            {
+                this.SetContentLengthHeader(context, inputStream.Length);
+
+                // means if-range failed so just return whole file.
+                using (inputStream)
+                {
+                    await this.WriteContentAsync(context, inputStream, 0, null, cancellationToken);
+                }
+
+                return;
+            }
+
+            long streamLength = inputStream.Length;
+            var ranges = this.GetRequestRanges(context, streamLength);
+            if (ranges.Count == 0)
+            {
+                this.SetContentLengthHeader(context, streamLength);
+
+                // return whole file
+                using (inputStream)
+                {
+                    await this.WriteContentAsync(context, inputStream, 0, null, cancellationToken);
                 }
             }
             else
             {
-                long streamLength = inputStream.Length;
-                var ranges = this.GetRequestRanges(context, streamLength);
-                if (ranges.Count == 0)
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.PartialContent;
+
+                // here will be partial result
+                using (inputStream)
                 {
-                    this.SetContentLengthHeader(context, streamLength);
-
-                    // return whole file
-                    using (inputStream)
+                    // multipart
+                    if (ranges.Count > 1)
                     {
-                        await this.WriteContentAsync(context, inputStream, 0, null, cancellationToken);
-                    }
-                }
-                else
-                {
-                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.PartialContent;
+                        string boundary = $"NextPart_{Guid.NewGuid():N}";
 
-                    // here will be partial result
-                    using (inputStream)
-                    {
-                        // multipart
-                        if (ranges.Count > 1)
+                        MediaTypeHeaderValue mediaTypeHeaderValue = MediaTypeHeaderValue.Parse("multipart/byteranges");
+                        mediaTypeHeaderValue.Boundary = boundary;
+                        context.HttpContext.Response.ContentType = mediaTypeHeaderValue.ToString();
+
+                        string contentTypeBoundary = $"{HeaderNames.ContentType}: {result.ContentType}{Environment.NewLine}";
+
+                        int boundaryLength = boundary.Length;
+                        long contentLength = 0;
+
+                        foreach (ProcessRange range in ranges)
                         {
-                            string boundary = $"NextPart_{Guid.NewGuid():N}";
+                            await context.HttpContext.Response.WriteAsync($"--{boundary}{Environment.NewLine}", cancellationToken);
+                            contentLength += boundaryLength + 2 + 1; // 2 as "--" and 1 as new line.
 
-                            MediaTypeHeaderValue mediaTypeHeaderValue = MediaTypeHeaderValue.Parse("multipart/byteranges");
-                            mediaTypeHeaderValue.Boundary = boundary;
-                            context.HttpContext.Response.ContentType = mediaTypeHeaderValue.ToString();
+                            await context.HttpContext.Response.WriteAsync(contentTypeBoundary, cancellationToken);
+                            contentLength += contentTypeBoundary.Length + 1;
 
-                            string contentTypeBoundary = $"{HeaderNames.ContentType}: {result.ContentType}{Environment.NewLine}";
-
-                            int boundaryLength = boundary.Length;
-                            long contentLength = 0;
-
-                            foreach (ProcessRange range in ranges)
-                            {
-                                await context.HttpContext.Response.WriteAsync($"--{boundary}{Environment.NewLine}", cancellationToken);
-                                contentLength += boundaryLength + 2 + 1; // 2 as "--" and 1 as new line.
-
-                                await context.HttpContext.Response.WriteAsync(contentTypeBoundary, cancellationToken);
-                                contentLength += contentTypeBoundary.Length + 1;
-
-                                var contentRangeHeaderValue = new ContentRangeHeaderValue(range.From, range.To, streamLength);
-                                string contentRangeBoundary = $"{HeaderNames.ContentRange}: {contentRangeHeaderValue}{Environment.NewLine}";
-                                await context.HttpContext.Response.WriteAsync(contentRangeBoundary, cancellationToken);
-                                contentLength += contentRangeBoundary.Length + 1;
-
-                                await context.HttpContext.Response.WriteAsync(Environment.NewLine, cancellationToken);
-                                contentLength += 1;
-
-                                await this.WriteContentAsync(context, inputStream, range.From, range.Length, cancellationToken);
-                                contentLength += range.Length;
-
-                                await context.HttpContext.Response.WriteAsync(Environment.NewLine, cancellationToken);
-                                contentLength += 1;
-                            }
-
-                            await context.HttpContext.Response.WriteAsync($"--{boundary}--{Environment.NewLine}", cancellationToken);
-                            contentLength += boundaryLength + 2 + 2 + 1; // 2 as "--" and 1 as new line.
-
-                            this.SetContentLengthHeader(context, contentLength);
-                        }
-                        else
-                        {
-                            ProcessRange range = ranges.Single();
                             var contentRangeHeaderValue = new ContentRangeHeaderValue(range.From, range.To, streamLength);
-                            context.HttpContext.Response.Headers[HeaderNames.ContentRange] = contentRangeHeaderValue.ToString();
+                            string contentRangeBoundary = $"{HeaderNames.ContentRange}: {contentRangeHeaderValue}{Environment.NewLine}";
+                            await context.HttpContext.Response.WriteAsync(contentRangeBoundary, cancellationToken);
+                            contentLength += contentRangeBoundary.Length + 1;
 
-                            this.SetContentLengthHeader(context, streamLength);
+                            await context.HttpContext.Response.WriteAsync(Environment.NewLine, cancellationToken);
+                            contentLength += 1;
 
                             await this.WriteContentAsync(context, inputStream, range.From, range.Length, cancellationToken);
+                            contentLength += range.Length;
+
+                            await context.HttpContext.Response.WriteAsync(Environment.NewLine, cancellationToken);
+                            contentLength += 1;
                         }
+
+                        await context.HttpContext.Response.WriteAsync($"--{boundary}--{Environment.NewLine}", cancellationToken);
+                        contentLength += boundaryLength + 2 + 2 + 1; // 2 as "--" and 1 as new line.
+
+                        this.SetContentLengthHeader(context, contentLength);
+                    }
+                    else
+                    {
+                        ProcessRange range = ranges.Single();
+                        var contentRangeHeaderValue = new ContentRangeHeaderValue(range.From, range.To, streamLength);
+                        context.HttpContext.Response.Headers[HeaderNames.ContentRange] = contentRangeHeaderValue.ToString();
+
+                        this.SetContentLengthHeader(context, streamLength);
+
+                        await this.WriteContentAsync(context, inputStream, range.From, range.Length, cancellationToken);
                     }
                 }
             }
@@ -425,7 +443,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             //   bytes=9500-
             //  The first and last bytes only (bytes 0 and 9999):
             //   bytes=0-0,-1
-            //  Other valid (but not canonical) specifications of the second 500 bytes (byte offsets 500-999, inclusive):Anvila
+            //  Other valid (but not canonical) specifications of the second 500 bytes (byte offsets 500-999, inclusive):
             //   bytes=500-600,601-999
             //   bytes=500-700,601-999
 
