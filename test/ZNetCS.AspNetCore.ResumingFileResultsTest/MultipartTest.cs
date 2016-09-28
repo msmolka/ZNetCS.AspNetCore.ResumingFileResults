@@ -48,8 +48,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             MediaTypeHeaderValue contentType = response.Content.Headers.ContentType;
             string boundary = contentType.Parameters.Single(p => p.Name.Equals("boundary")).Value;
 
-            var expected = new StringBuilder();
-            expected.AppendLine();
+            var expected = new StringBuilder();            
             expected.AppendLine($"--{boundary}");
             expected.AppendLine("Content-Type: text/plain");
             expected.AppendLine("Content-Range: bytes 0-4/62");
@@ -62,8 +61,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             expected.AppendLine("XYZ");
             expected.Append($"--{boundary}--");
 
-            long len = expected.Length - 2;
-
+            long len = expected.Length;
+            
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual(expected.ToString(), responseString, "should be multipart boundary response");
@@ -92,8 +91,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             MediaTypeHeaderValue contentType = response.Content.Headers.ContentType;
             string boundary = contentType.Parameters.Single(p => p.Name.Equals("boundary")).Value;
 
-            var expected = new StringBuilder();
-            expected.AppendLine();
+            var expected = new StringBuilder();         
             expected.AppendLine($"--{boundary}");
             expected.AppendLine("Content-Type: text/plain");
             expected.AppendLine("Content-Range: bytes 0-0/62");
@@ -111,7 +109,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             expected.AppendLine("XYZ");
             expected.Append($"--{boundary}--");
 
-            long len = expected.Length - 2;
+            long len = expected.Length;
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");

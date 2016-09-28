@@ -313,9 +313,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
 
                         this.SetContentLengthHeader(context, contentLength);
 
-                        // 1.  Additional CRLFs might precede the first boundary string in the body.
-                        await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
-
                         foreach (ProcessRange range in ranges)
                         {
                             await context.HttpContext.Response.WriteAsync($"--{boundary}", cancellationToken);
