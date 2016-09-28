@@ -49,6 +49,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             string boundary = contentType.Parameters.Single(p => p.Name.Equals("boundary")).Value;
 
             var expected = new StringBuilder();
+            expected.AppendLine();
             expected.AppendLine($"--{boundary}");
             expected.AppendLine("Content-Type: text/plain");
             expected.AppendLine("Content-Range: bytes 0-4/62");
@@ -59,7 +60,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             expected.AppendLine("Content-Range: bytes 59-61/62");
             expected.AppendLine();
             expected.AppendLine("XYZ");
-            expected.AppendLine($"--{boundary}--");
+            expected.Append($"--{boundary}--");
+
+            long len = expected.Length - 2;
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
@@ -67,6 +70,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(len, response.Content.Headers.ContentLength, $"Content-Length != {len}");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -89,6 +93,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             string boundary = contentType.Parameters.Single(p => p.Name.Equals("boundary")).Value;
 
             var expected = new StringBuilder();
+            expected.AppendLine();
             expected.AppendLine($"--{boundary}");
             expected.AppendLine("Content-Type: text/plain");
             expected.AppendLine("Content-Range: bytes 0-0/62");
@@ -104,14 +109,17 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             expected.AppendLine("Content-Range: bytes 59-61/62");
             expected.AppendLine();
             expected.AppendLine("XYZ");
-            expected.AppendLine($"--{boundary}--");
+            expected.Append($"--{boundary}--");
+
+            long len = expected.Length - 2;
 
             // Assert
             Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
             Assert.AreEqual(expected.ToString(), responseString, "should be multipart boundary response");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
-            Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
+            Assert.AreEqual(len, response.Content.Headers.ContentLength, $"Content-Length != {len}");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 

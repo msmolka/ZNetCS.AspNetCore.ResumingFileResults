@@ -219,7 +219,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                 }
                 else if (rangeConditionHeaderValue.EntityTag != null)
                 {
-                    // A client MUST NOT generate an If-Range header field containing an entity - tag that is marked as weak.
+                    // A client MUST NOT generate an If-Range header field containing an entity-tag that is marked as weak.
                     // A server that evaluates an If-Range precondition MUST use the strong comparison function when comparing entity-tags.
                     // TODO: Replace with compare method when released.
                     if ((result.EntityTag == null) || rangeConditionHeaderValue.EntityTag.IsWeak || result.EntityTag.IsWeak
@@ -300,44 +300,40 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                     // multipart
                     if (ranges.Count > 1)
                     {
+                        const string crlf = "\r\n";
                         string boundary = $"NextPart_{Guid.NewGuid():N}";
 
                         MediaTypeHeaderValue mediaTypeHeaderValue = MediaTypeHeaderValue.Parse("multipart/byteranges");
                         mediaTypeHeaderValue.Boundary = boundary;
                         context.HttpContext.Response.ContentType = mediaTypeHeaderValue.ToString();
 
-                        string contentTypeBoundary = $"{HeaderNames.ContentType}: {result.ContentType}{Environment.NewLine}";
+                        string contentTypeBoundary = $"{HeaderNames.ContentType}: {result.ContentType}";
 
-                        int boundaryLength = boundary.Length;
-                        long contentLength = 0;
+                        long contentLength = this.CalculateMultipartBoundaryLength(ranges, streamLength, boundary, result.ContentType);
+
+                        this.SetContentLengthHeader(context, contentLength);
+
+                        // 1.  Additional CRLFs might precede the first boundary string in the body.
+                        await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
 
                         foreach (ProcessRange range in ranges)
                         {
-                            await context.HttpContext.Response.WriteAsync($"--{boundary}{Environment.NewLine}", cancellationToken);
-                            contentLength += boundaryLength + 2 + 1; // 2 as "--" and 1 as new line.
-
+                            await context.HttpContext.Response.WriteAsync($"--{boundary}", cancellationToken);
+                            await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
                             await context.HttpContext.Response.WriteAsync(contentTypeBoundary, cancellationToken);
-                            contentLength += contentTypeBoundary.Length + 1;
+                            await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
 
                             var contentRangeHeaderValue = new ContentRangeHeaderValue(range.From, range.To, streamLength);
-                            string contentRangeBoundary = $"{HeaderNames.ContentRange}: {contentRangeHeaderValue}{Environment.NewLine}";
+                            string contentRangeBoundary = $"{HeaderNames.ContentRange}: {contentRangeHeaderValue}";
                             await context.HttpContext.Response.WriteAsync(contentRangeBoundary, cancellationToken);
-                            contentLength += contentRangeBoundary.Length + 1;
-
-                            await context.HttpContext.Response.WriteAsync(Environment.NewLine, cancellationToken);
-                            contentLength += 1;
+                            await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
+                            await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
 
                             await this.WriteContentAsync(context, inputStream, range.From, range.Length, cancellationToken);
-                            contentLength += range.Length;
-
-                            await context.HttpContext.Response.WriteAsync(Environment.NewLine, cancellationToken);
-                            contentLength += 1;
+                            await context.HttpContext.Response.WriteAsync(crlf, cancellationToken);
                         }
 
-                        await context.HttpContext.Response.WriteAsync($"--{boundary}--{Environment.NewLine}", cancellationToken);
-                        contentLength += boundaryLength + 2 + 2 + 1; // 2 as "--" and 1 as new line.
-
-                        this.SetContentLengthHeader(context, contentLength);
+                        await context.HttpContext.Response.WriteAsync($"--{boundary}--", cancellationToken);
                     }
                     else
                     {
@@ -345,7 +341,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                         var contentRangeHeaderValue = new ContentRangeHeaderValue(range.From, range.To, streamLength);
                         context.HttpContext.Response.Headers[HeaderNames.ContentRange] = contentRangeHeaderValue.ToString();
 
-                        this.SetContentLengthHeader(context, streamLength);
+                        this.SetContentLengthHeader(context, range.Length);
 
                         await this.WriteContentAsync(context, inputStream, range.From, range.Length, cancellationToken);
                     }
@@ -401,6 +397,40 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             {
                 headers[HeaderNames.LastModified] = HeaderUtilities.FormatDate(result.LastModified.Value);
             }
+        }
+
+        /// <summary>
+        /// Calculate multipart boundary length.
+        /// </summary>
+        /// <param name="ranges">
+        /// The ranges used for calculation.
+        /// </param>
+        /// <param name="streamLength">
+        /// The stream length for Content-Range line calculation.
+        /// </param>
+        /// <param name="boundary">
+        /// The boundary text to calculate boundary delimiter length.
+        /// </param>
+        /// <param name="contentType">
+        /// The content type for Content-Type line calculation.
+        /// </param>
+        /// <returns>
+        /// Calculated multipart boundary length.
+        /// </returns>
+        private long CalculateMultipartBoundaryLength(IEnumerable<ProcessRange> ranges, long streamLength, string boundary, string contentType)
+        {
+            long contentLength = 0;
+            string contentTypeBoundary = $"{HeaderNames.ContentType}: {contentType}";
+            foreach (ProcessRange range in ranges)
+            {
+                var contentRangeHeaderValue = new ContentRangeHeaderValue(range.From, range.To, streamLength);
+                string contentRangeBoundary = $"{HeaderNames.ContentRange}: {contentRangeHeaderValue}";
+
+                contentLength += 2 /* -- */ + boundary.Length + contentTypeBoundary.Length + contentRangeBoundary.Length + range.Length + 10 /* 5*2 CRLF*/;
+            }
+
+            contentLength += 2 /* -- */ + boundary.Length + 2 /* -- */;
+            return contentLength;
         }
 
         /// <summary>

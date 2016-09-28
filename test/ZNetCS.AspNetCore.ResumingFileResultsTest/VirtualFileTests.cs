@@ -45,6 +45,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(62, response.Content.Headers.ContentLength, "Content-Length != 62");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -66,6 +67,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(62, response.Content.Headers.ContentLength, "Content-Length != 62");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -87,6 +89,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(62, response.Content.Headers.ContentLength, "Content-Length != 62");
             Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
         }
 
@@ -108,6 +111,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(62, response.Content.Headers.ContentLength, "Content-Length != 62");
             Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
         }
 
@@ -133,6 +137,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 0-0/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 0-0/62");
+            Assert.AreEqual(1, response.Content.Headers.ContentLength, "Content-Length != 1");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -158,6 +163,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 0-0/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 0-0/62");
+            Assert.AreEqual(1, response.Content.Headers.ContentLength, "Content-Length != 1");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -183,6 +189,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
+            Assert.AreEqual(1, response.Content.Headers.ContentLength, "Content-Length != 1");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -208,6 +215,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
+            Assert.AreEqual(1, response.Content.Headers.ContentLength, "Content-Length != 1");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -232,6 +240,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
+            Assert.AreEqual(1, response.Content.Headers.ContentLength, "Content-Length != 1");
             Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
         }
 
@@ -257,6 +266,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNotNull(response.Content.Headers.ContentRange, "Content-Range == null");
             Assert.AreEqual("bytes 1-1/62", response.Content.Headers.ContentRange.ToString(), "Content-Range != bytes 1-1/62");
+            Assert.AreEqual(1, response.Content.Headers.ContentLength, "Content-Length != 1");
             Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
         }
 

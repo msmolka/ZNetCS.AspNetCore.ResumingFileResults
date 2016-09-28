@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "packOptions": {
     "owners": [ "Marcin Smółka" ],
     "licenseUrl": "https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults/master/LICENSE",
@@ -31,10 +31,10 @@
   },
 
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc.Core": "1.0.1",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-    "Microsoft.Extensions.Logging": "1.0.0",
-    "Microsoft.Net.Http.Headers": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.Core": "1.0.1-*",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-*",
+    "Microsoft.Extensions.Logging": "1.0.0-*",
+    "Microsoft.Net.Http.Headers": "1.0.0-*",
     "StyleCop.Analyzers": {
       "version": "1.0.0",
       "type": "build"
