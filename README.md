@@ -23,7 +23,7 @@ When you install the package, it should be added to your `package.json`. Alterna
 ```json
 {
   "dependencies" : {
-    "ZNetCS.AspNetCore.ResumingFileResults": "1.0.5"
+    "ZNetCS.AspNetCore.ResumingFileResults": "1.0.6"
   }
 }
 ```
@@ -90,7 +90,7 @@ public IActionResult VirtualFile()
 ```
 
 Above examples will serve your data as `Content-Disposition: attachment`. When fileName is not provided then data is served as `Content-Disposition: inline`.
-Additionaly it is possible provide `Etag` and `LastModified` headers.
+Additionaly it is possible provide `ETag` and `LastModified` headers.
 
 ```csharp
 public IActionResult File()

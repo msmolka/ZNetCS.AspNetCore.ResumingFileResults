@@ -49,7 +49,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// The Content-Type header of the response.
         /// </param>
         /// <param name="etag">
-        /// The Etag header of the response.
+        /// The ETag header of the response.
         /// </param>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "OK")]
         public ResumingPhysicalFileResult(string fileName, string contentType, string etag = null)
@@ -67,7 +67,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// The Content-Type header of the response.
         /// </param>
         /// <param name="etag">
-        /// The Etag header of the response.
+        /// The ETag header of the response.
         /// </param>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "OK")]
         public ResumingPhysicalFileResult(string fileName, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(contentType?.ToString(), etag)

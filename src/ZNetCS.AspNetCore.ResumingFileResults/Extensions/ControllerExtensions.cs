@@ -90,7 +90,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Extensions
         /// The suggested file name.
         /// </param>
         /// <param name="etag">
-        /// The Etag header of the file.
+        /// The ETag header of the file.
         /// </param>
         /// <returns>
         /// The created <see cref="ResumingFileContentResult"/> for the response.
@@ -171,7 +171,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Extensions
         /// The suggested file name.
         /// </param>
         /// <param name="etag">
-        /// The Etag header of the file.
+        /// The ETag header of the file.
         /// </param>
         /// <returns>
         /// The created <see cref="ResumingFileStreamResult"/> for the response.
@@ -247,7 +247,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Extensions
         /// The suggested file name.
         /// </param>
         /// <param name="etag">
-        /// The Etag header of the file.
+        /// The ETag header of the file.
         /// </param>
         /// <returns>
         /// The created <see cref="ResumingVirtualFileResult"/> for the response.
@@ -323,7 +323,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Extensions
         /// The suggested file name.
         /// </param>
         /// <param name="etag">
-        /// The Etag header of the file.
+        /// The ETag header of the file.
         /// </param>
         /// <returns>
         /// The created <see cref="ResumingPhysicalFileResult"/> for the response.
