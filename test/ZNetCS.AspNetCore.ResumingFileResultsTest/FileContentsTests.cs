@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ZNetCS.AspNetCore.ResumingFileResults
+namespace ZNetCS.AspNetCore.ResumingFileResultsTest
 {
     #region Usings
 

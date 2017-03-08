@@ -87,7 +87,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                         return false;
                     }
 
-                    if ((result.EntityTag == null) || !(entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)) || entityTagHeaderValues.Any(e => e.Compare(result.EntityTag, true))))
+                    if ((result.EntityTag == null) ||
+                        !(entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)) || entityTagHeaderValues.Any(e => e.Compare(result.EntityTag, true))))
                     {
                         statusCode = HttpStatusCode.PreconditionFailed;
                         return false;
@@ -136,7 +137,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                         return false;
                     }
 
-                    if ((result.EntityTag != null) && (entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)) || entityTagHeaderValues.Any(e => e.Compare(result.EntityTag, false))))
+                    if ((result.EntityTag != null) &&
+                        (entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)) || entityTagHeaderValues.Any(e => e.Compare(result.EntityTag, false))))
                     {
                         statusCode = (context.HttpContext.Request.Method == "GET") || (context.HttpContext.Request.Method == "HEAD")
                             ? HttpStatusCode.NotModified
@@ -453,19 +455,19 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             }
 
             // Examples of byte-ranges-specifier values:
-            //  The first 500 bytes (byte offsets 0-499, inclusive):
-            //    bytes=0-499
-            //  The second 500 bytes (byte offsets 500-999, inclusive):
-            //    bytes=500-999
+            // The first 500 bytes (byte offsets 0-499, inclusive):
+            // bytes=0-499
+            // The second 500 bytes (byte offsets 500-999, inclusive):
+            // bytes=500-999
             // Additional examples, assuming a representation of length 10000:
-            //  The final 500 bytes (byte offsets 9500-9999, inclusive):
-            //   bytes=-500
-            //   bytes=9500-
-            //  The first and last bytes only (bytes 0 and 9999):
-            //   bytes=0-0,-1
-            //  Other valid (but not canonical) specifications of the second 500 bytes (byte offsets 500-999, inclusive):
-            //   bytes=500-600,601-999
-            //   bytes=500-700,601-999
+            // The final 500 bytes (byte offsets 9500-9999, inclusive):
+            // bytes=-500
+            // bytes=9500-
+            // The first and last bytes only (bytes 0 and 9999):
+            // bytes=0-0,-1
+            // Other valid (but not canonical) specifications of the second 500 bytes (byte offsets 500-999, inclusive):
+            // bytes=500-600,601-999
+            // bytes=500-700,601-999
 
             // process parsed bytes to check if in allowed ranges
             foreach (RangeItemHeaderValue range in rangeHeader.Ranges)
@@ -578,7 +580,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             /// <summary>
             /// Gets the length.
             /// </summary>
-            public long Length => this.To - this.From + 1;
+            public long Length => (this.To - this.From) + 1;
 
             /// <summary>
             /// Gets or sets the end byte (inclusion).

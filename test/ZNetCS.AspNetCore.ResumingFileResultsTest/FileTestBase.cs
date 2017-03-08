@@ -7,16 +7,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ZNetCS.AspNetCore.ResumingFileResults
+namespace ZNetCS.AspNetCore.ResumingFileResultsTest
 {
     #region Usings
 
     using System;
     using System.IO;
     using System.Net.Http;
-
-    // TODO: Replace with Microsoft headers ones new version of TestServer is released.
     using System.Net.Http.Headers;
+    using System.Reflection;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.TestHost;
@@ -37,11 +36,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// </summary>
         protected FileTestBase()
         {
+            var path = Path.GetDirectoryName(typeof(Startup).GetTypeInfo().Assembly.Location);
+            var di = new DirectoryInfo(path).Parent.Parent.Parent;
+
             // Arrange
             this.Server = new TestServer(
                 new WebHostBuilder()
                     .UseStartup<Startup>()
-                    .UseContentRoot(Directory.GetCurrentDirectory()));
+                    .UseContentRoot(di.FullName));
 
             this.Client = this.Server.CreateClient();
         }
