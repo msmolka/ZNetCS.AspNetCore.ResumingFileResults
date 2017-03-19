@@ -15,7 +15,7 @@ Install using the [ZNetCS.AspNetCore.ResumingFileResults NuGet package](https://
 PM> Install-Package ZNetCS.AspNetCore.ResumingFileResults
 ```
 
-##Usage 
+## Usage 
 
 When you install the package, it should be added to your `package.json`. Alternatively, you can add it directly by adding:
 
