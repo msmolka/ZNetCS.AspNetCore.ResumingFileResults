@@ -17,15 +17,13 @@ PM> Install-Package ZNetCS.AspNetCore.ResumingFileResults
 
 ## Usage 
 
-When you install the package, it should be added to your `package.json`. Alternatively, you can add it directly by adding:
+When you install the package, it should be added to your `.csproj`. Alternatively, you can add it directly by adding:
 
 
-```json
-{
-  "dependencies" : {
-    "ZNetCS.AspNetCore.ResumingFileResults": "1.0.6"
-  }
-}
+```xml
+<ItemGroup>
+    <PackageReference Include="ZNetCS.AspNetCore.ResumingFileResults" Version="1.0.6" />
+</ItemGroup>
 ```
 
 In order to use the ResumingFileResults, you must configure the services in the `ConfigureServices` call of `Startup`: 
@@ -96,10 +94,10 @@ Additionaly it is possible provide `ETag` and `LastModified` headers.
 public IActionResult File()
 {
     return new ResumingVirtualFileResult("TestFile.txt", "text/plain", "\"MyEtagHeader\"") 
-	{ 
-		FileDownloadName = "TestFile.txt", 
-		LastModified = DateTimeOffset.Now 
-	};
+    { 
+        FileDownloadName = "TestFile.txt", 
+        LastModified = DateTimeOffset.Now 
+    };
 }
 ```
 
