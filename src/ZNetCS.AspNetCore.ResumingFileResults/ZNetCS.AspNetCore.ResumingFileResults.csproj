@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>A small package to allow using resume during transfering data over MVC application in ASP.NET Core.</Description>
     <Copyright>Marcin Smółka zNET Computer Solutions</Copyright>
-    <VersionPrefix>1.0.6</VersionPrefix>
+    <VersionPrefix>1.0.7</VersionPrefix>
     <Authors>Marcin Smółka</Authors>
     <TargetFrameworks>net451;netstandard1.6</TargetFrameworks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -20,16 +20,13 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <CodeAnalysisRuleSet>..\..\CommonRuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\CommonRuleSet.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net451|AnyCPU'">    
   </PropertyGroup>
 
@@ -38,8 +35,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
     <PackageReference Include="Microsoft.Net.Http.Headers" Version="1.1.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.0">

@@ -79,6 +79,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// </summary>
         public DateTimeOffset? LastModified { get; set; }
 
+        /// <summary>
+        /// Gets or sets the file name that will be used in the Content-Disposition inline header of the response.
+        /// </summary>
+        public string FileInlineName { get; set; } = string.Empty;
+
         #endregion
     }
 }

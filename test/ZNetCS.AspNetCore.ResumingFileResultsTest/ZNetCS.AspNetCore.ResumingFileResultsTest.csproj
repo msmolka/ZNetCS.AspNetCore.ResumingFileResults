@@ -23,13 +23,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.1.12" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.17" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Net.Http.Headers" Version="1.1.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="1.1.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.17" />
   </ItemGroup>
 
   <ItemGroup>

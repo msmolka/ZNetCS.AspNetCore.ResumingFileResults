@@ -84,6 +84,24 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         }
 
         /// <summary>
+        /// The file contents.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
+        [HttpGet("contents/{fileName}")]
+        public IActionResult FileContents(bool fileName)
+        {
+            string webRoot = this.hostingEnvironment.WebRootPath;
+            var contents = System.IO.File.ReadAllBytes(Path.Combine(webRoot, "TestFile.txt"));
+
+            var result = new ResumingFileContentResult(contents, "text/plain")
+            {
+                FileInlineName = "TestFile.txt",
+                LastModified = this.lastModified
+            };
+            return result;
+        }
+
+        /// <summary>
         /// The file.
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
@@ -123,6 +141,25 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         }
 
         /// <summary>
+        /// The file stream.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
+        [HttpGet("stream/{fileName}")]
+        public IActionResult FileStream(bool fileName)
+        {
+            string webRoot = this.hostingEnvironment.WebRootPath;
+            FileStream stream = System.IO.File.OpenRead(Path.Combine(webRoot, "TestFile.txt"));
+
+            var result = new ResumingFileStreamResult(stream, "text/plain")
+            {
+                FileInlineName = "TestFile.txt",
+                LastModified = this.lastModified
+            };
+
+            return result;
+        }
+
+        /// <summary>
         /// The hello action.
         /// </summary>
         [HttpGet("hello")]
@@ -150,6 +187,24 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         }
 
         /// <summary>
+        /// The physical file.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
+        [HttpGet("physical/{fileName}")]
+        public IActionResult PhysicalFile(bool fileName)
+        {
+            string webRoot = this.hostingEnvironment.WebRootPath;
+
+            var result = new ResumingPhysicalFileResult(Path.Combine(webRoot, "TestFile.txt"), "text/plain")
+            {
+                FileInlineName = "TestFile.txt",
+                LastModified = this.lastModified
+            };
+
+            return result;
+        }
+
+        /// <summary>
         /// The virtual file.
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
@@ -158,6 +213,21 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         {
             ResumingVirtualFileResult result = this.ResumingFile("TestFile.txt", "text/plain", fileName ? "TestFile.txt" : null, etag ? EntityTag : null);
             result.LastModified = this.lastModified;
+            return result;
+        }
+
+        /// <summary>
+        /// The virtual file.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
+        [HttpGet("virtual/{fileName}")]
+        public IActionResult VirtualFile(bool fileName)
+        {
+            var result = new ResumingVirtualFileResult("TestFile.txt", "text/plain")
+            {
+                FileInlineName = "TestFile.txt",
+                LastModified = this.lastModified
+            };
             return result;
         }
 

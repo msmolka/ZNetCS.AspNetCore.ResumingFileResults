@@ -116,6 +116,29 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
         }
 
         /// <summary>
+        /// The full file contents inline without entity tag test.
+        /// </summary>
+        [TestMethod]
+        public async Task FullFileContentsInlineFileNameTest()
+        {
+            // Act
+            HttpResponseMessage response = await this.Client.GetAsync("/test/file/contents/false");
+            response.EnsureSuccessStatusCode();
+
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
+            Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
+            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.IsNull(response.Headers.ETag, "ETag != null");
+            Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
+            Assert.AreEqual(62, response.Content.Headers.ContentLength, "Content-Length != 62");
+            Assert.AreEqual("inline", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != inline");
+            Assert.AreEqual("TestFile.txt", response.Content.Headers.ContentDisposition.FileName, "DispositionType File != TestFile.txt");
+        }
+
+        /// <summary>
         /// The partial first byte file contents attachment with entity tag test.
         /// </summary>
         [TestMethod]

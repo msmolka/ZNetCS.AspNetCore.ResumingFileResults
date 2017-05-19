@@ -77,8 +77,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             string ifMatchValue = context.HttpContext.Request.Headers[HeaderNames.IfMatch];
             if (!string.IsNullOrWhiteSpace(ifMatchValue))
             {
-                IList<EntityTagHeaderValue> entityTagHeaderValues;
-                if (EntityTagHeaderValue.TryParseList(new List<string> { ifMatchValue }, out entityTagHeaderValues))
+                if (EntityTagHeaderValue.TryParseList(new List<string> { ifMatchValue }, out IList<EntityTagHeaderValue> entityTagHeaderValues))
                 {
                     // only one element * is allowed
                     if ((entityTagHeaderValues.Count > 1) && entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)))
@@ -101,8 +100,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                 string ifUnmodifiedSinceValue = context.HttpContext.Request.Headers[HeaderNames.IfUnmodifiedSince];
                 if (!string.IsNullOrWhiteSpace(ifUnmodifiedSinceValue))
                 {
-                    DateTimeOffset date;
-                    if (HeaderUtilities.TryParseDate(ifUnmodifiedSinceValue, out date))
+                    if (HeaderUtilities.TryParseDate(ifUnmodifiedSinceValue, out DateTimeOffset date))
                     {
                         // The origin server MUST NOT perform the requested method
                         // if the selected representation's last modification date is more
@@ -125,8 +123,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             string ifNoneMatchValue = context.HttpContext.Request.Headers[HeaderNames.IfNoneMatch];
             if (!string.IsNullOrWhiteSpace(ifNoneMatchValue))
             {
-                IList<EntityTagHeaderValue> entityTagHeaderValues;
-                if (EntityTagHeaderValue.TryParseList(new List<string> { ifNoneMatchValue }, out entityTagHeaderValues))
+                if (EntityTagHeaderValue.TryParseList(new List<string> { ifNoneMatchValue }, out IList<EntityTagHeaderValue> entityTagHeaderValues))
                 {
                     // only one element * is allowed
                     if ((entityTagHeaderValues.Count > 1) && entityTagHeaderValues.Any(e => e.Equals(EntityTagHeaderValue.Any)))
@@ -156,8 +153,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
                     string ifModifiedSinceValue = context.HttpContext.Request.Headers[HeaderNames.IfModifiedSince];
                     if (!string.IsNullOrWhiteSpace(ifModifiedSinceValue))
                     {
-                        DateTimeOffset date;
-                        if (HeaderUtilities.TryParseDate(ifModifiedSinceValue, out date))
+                        if (HeaderUtilities.TryParseDate(ifModifiedSinceValue, out DateTimeOffset date))
                         {
                             // The origin server SHOULD NOT perform the requested
                             // method if the selected representation's last modification date is
@@ -203,8 +199,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             // second request.  Informally, its meaning is as follows: if the
             // representation is unchanged, send me the part(s)that I am requesting
             // in Range; otherwise, send me the entire representation.
-            RangeConditionHeaderValue rangeConditionHeaderValue;
-            if (RangeConditionHeaderValue.TryParse(ifRangeValue, out rangeConditionHeaderValue))
+            if (RangeConditionHeaderValue.TryParse(ifRangeValue, out RangeConditionHeaderValue rangeConditionHeaderValue))
             {
                 if (rangeConditionHeaderValue.LastModified.HasValue)
                 {
@@ -250,10 +245,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             ResumingFileResult result,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpStatusCode? statusCode;
             this.SetDefaultHeaders(context, result);
 
-            if (!this.CheckDefaultPrecondition(context, result, out statusCode))
+            if (!this.CheckDefaultPrecondition(context, result, out HttpStatusCode? statusCode))
             {
                 // ReSharper disable once PossibleInvalidOperationException
                 await new StatusCodeResult((int)statusCode.Value).ExecuteResultAsync(context);
@@ -374,6 +368,12 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             if (string.IsNullOrEmpty(result.FileDownloadName))
             {
                 var contentDisposition = new ContentDispositionHeaderValue("inline");
+
+                if (!string.IsNullOrWhiteSpace(result.FileInlineName))
+                {
+                    contentDisposition.SetHttpFileName(result.FileInlineName);
+                }
+
                 headers[HeaderNames.ContentDisposition] = contentDisposition.ToString();
             }
 
@@ -442,8 +442,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
             var headerRanges = new List<ProcessRange>();
 
             // first parse byte ranges header
-            RangeHeaderValue rangeHeader;
-            if (!RangeHeaderValue.TryParse(context.HttpContext.Request.Headers[HeaderNames.Range], out rangeHeader))
+            if (!RangeHeaderValue.TryParse(context.HttpContext.Request.Headers[HeaderNames.Range], out RangeHeaderValue rangeHeader))
             {
                 return headerRanges;
             }
