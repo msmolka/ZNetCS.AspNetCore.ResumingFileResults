@@ -3,7 +3,7 @@
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
-//   The resuming file result executor.
+//   The resuming file contents result executor.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,11 +11,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
 {
     #region Usings
 
-    using System.IO;
-    using System.Threading;
+    using System;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Internal;
     using Microsoft.Extensions.Logging;
 
     #endregion
@@ -23,7 +23,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     /// <summary>
     /// The resuming file contents result executor.
     /// </summary>
-    public class ResumingFileContentResultExecutor : ResumingFileResultExecutorBase
+    public class ResumingFileContentResultExecutor : FileContentResultExecutor
     {
         #region Constructors and Destructors
 
@@ -33,7 +33,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// <param name="loggerFactory">
         /// The logger factory.
         /// </param>
-        public ResumingFileContentResultExecutor(ILoggerFactory loggerFactory) : base(CreateLogger<ResumingFileContentResultExecutor>(loggerFactory))
+        public ResumingFileContentResultExecutor(ILoggerFactory loggerFactory) : base(loggerFactory)
         {
         }
 
@@ -48,14 +48,23 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// The action context to access request and response.
         /// </param>
         /// <param name="result">
-        /// The action result to process.
+        /// The file result to process.
         /// </param>
-        /// <param name="cancellationToken">
-        /// The cancellation token to support cancellation.
-        /// </param>
-        public Task ExecuteAsync(ActionContext context, ResumingFileContentResult result, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task ExecuteAsync(ActionContext context, ResumingFileContentResult result)
         {
-            return this.ExecuteAsync(context, new MemoryStream(result.FileContents), result, cancellationToken);
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            ResumingFileHelper.SetContentDispositionHeaderInline(context, result);
+
+            return base.ExecuteAsync(context, result);
         }
 
         #endregion

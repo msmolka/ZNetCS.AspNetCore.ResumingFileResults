@@ -27,17 +27,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
     /// <summary>
     /// The resuming file stream result.
     /// </summary>
-    public class ResumingFileStreamResult : ResumingFileResult
+    public class ResumingFileStreamResult : FileStreamResult, IResumingFileResult
     {
-        #region Fields
-
-        /// <summary>
-        /// The file stream.
-        /// </summary>
-        private Stream fileStream;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -71,46 +62,23 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// The ETag header of the response.
         /// </param>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "OK")]
-        public ResumingFileStreamResult(Stream fileStream, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(contentType?.ToString(), etag)
+        public ResumingFileStreamResult(Stream fileStream, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(fileStream, contentType)
         {
-            if (fileStream == null)
-            {
-                throw new ArgumentNullException(nameof(fileStream));
-            }
-
-            this.FileStream = fileStream;
+            this.EntityTag = etag;
         }
 
         #endregion
 
         #region Public Properties
 
-        /// <summary>
-        /// Gets or sets the stream with the file that will be sent back as the response.
-        /// </summary>
-        public Stream FileStream
-        {
-            get
-            {
-                return this.fileStream;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                this.fileStream = value;
-            }
-        }
+        /// <inheritdoc/>
+        public string FileInlineName { get; set; }
 
         #endregion
 
         #region Public Methods
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public override Task ExecuteResultAsync(ActionContext context)
         {
             if (context == null)

@@ -12,11 +12,10 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     #region Usings
 
     using System;
-    using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Internal;
     using Microsoft.Extensions.Logging;
 
     #endregion
@@ -24,17 +23,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     /// <summary>
     /// The resuming physical file result executor.
     /// </summary>
-    public class ResumingPhysicalFileResultExecutor : ResumingFileResultExecutorBase
+    public class ResumingPhysicalFileResultExecutor : PhysicalFileResultExecutor
     {
-        #region Constants
-
-        /// <summary>
-        /// The default buffer size.
-        /// </summary>
-        private const int DefaultBufferSize = 0x1000;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -43,7 +33,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// <param name="loggerFactory">
         /// The logger factory.
         /// </param>
-        public ResumingPhysicalFileResultExecutor(ILoggerFactory loggerFactory) : base(CreateLogger<ResumingPhysicalFileResultExecutor>(loggerFactory))
+        public ResumingPhysicalFileResultExecutor(ILoggerFactory loggerFactory) : base(loggerFactory)
         {
         }
 
@@ -58,44 +48,23 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// The action context to access request and response.
         /// </param>
         /// <param name="result">
-        /// The action result to process.
+        /// The file result to process.
         /// </param>
-        /// <param name="cancellationToken">
-        /// The cancellation token to support cancellation.
-        /// </param>
-        public Task ExecuteAsync(ActionContext context, ResumingPhysicalFileResult result, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task ExecuteAsync(ActionContext context, ResumingPhysicalFileResult result)
         {
-            if (!Path.IsPathRooted(result.FileName))
+            if (context == null)
             {
-                throw new NotSupportedException($"Path '{result.FileName}' was not rooted.");
+                throw new ArgumentNullException(nameof(context));
             }
 
-            if (File.Exists(result.FileName))
+            if (result == null)
             {
-                return this.ExecuteAsync(context, this.GetFileStream(result.FileName), result, cancellationToken);
+                throw new ArgumentNullException(nameof(result));
             }
 
-            throw new FileNotFoundException($"Could not find file: {result.FileName}");
-        }
+            ResumingFileHelper.SetContentDispositionHeaderInline(context, result);
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Gets read file stream from file info.
-        /// </summary>
-        /// <param name="path">
-        /// The path to the file.
-        /// </param>
-        protected virtual Stream GetFileStream(string path)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, DefaultBufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            return base.ExecuteAsync(context, result);
         }
 
         #endregion

@@ -26,17 +26,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
     /// <summary>
     /// The resuming physical file result.
     /// </summary>
-    public class ResumingPhysicalFileResult : ResumingFileResult
+    public class ResumingPhysicalFileResult : PhysicalFileResult, IResumingFileResult
     {
-        #region Fields
-
-        /// <summary>
-        /// The file name.
-        /// </summary>
-        private string fileName;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -70,46 +61,23 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// The ETag header of the response.
         /// </param>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "OK")]
-        public ResumingPhysicalFileResult(string fileName, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(contentType?.ToString(), etag)
+        public ResumingPhysicalFileResult(string fileName, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(fileName, contentType)
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
-
-            this.FileName = fileName;
+            this.EntityTag = etag;
         }
 
         #endregion
 
         #region Public Properties
 
-        /// <summary>
-        /// Gets or sets the path to the file that will be sent back as the response.
-        /// </summary>
-        public string FileName
-        {
-            get
-            {
-                return this.fileName;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                this.fileName = value;
-            }
-        }
+        /// <inheritdoc/>
+        public string FileInlineName { get; set; }
 
         #endregion
 
         #region Public Methods
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public override Task ExecuteResultAsync(ActionContext context)
         {
             if (context == null)

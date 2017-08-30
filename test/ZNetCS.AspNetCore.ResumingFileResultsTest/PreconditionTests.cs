@@ -55,7 +55,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
         /// The precondition if match empty fail test.
         /// </summary>
         [TestMethod]
-        public async Task PreconditionIfMatchEmptyFailTest()
+        public async Task PreconditionIfMatchEmptySuccessTest()
         {
             // Arrange
             this.Client.DefaultRequestHeaders.Add("If-Match", "\"xyzzy\"");
@@ -66,8 +66,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
-            Assert.AreEqual(string.Empty, responseString, "response is not empty");
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
+            Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
@@ -304,7 +304,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
+            Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
@@ -339,7 +339,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
         /// The precondition if none match get fail weak test.
         /// </summary>
         [TestMethod]
-        public async Task PreconditionIfNoneMatchGetFailWeakTest()
+        public async Task PreconditionIfNoneMatchGetWeakSuccessTest()
         {
             // Arrange
             string entityTag = this.EntityTag.ToString();
@@ -352,8 +352,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
-            Assert.AreEqual(string.Empty, responseString, "response is not empty");
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
+            Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
@@ -398,7 +398,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
+            Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
@@ -498,11 +498,10 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
-            Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
+            Assert.AreEqual(HttpStatusCode.PartialContent, response.StatusCode, "StatusCode != PartialContent");
+            Assert.AreEqual("1", responseString, "not partial result");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.IsNull(response.Headers.ETag, "ETag != null");
-            Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
         }
 
@@ -686,7 +685,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
         /// The precondition if unmodified since if match success test.
         /// </summary>
         [TestMethod]
-        public async Task PreconditionIfUnmodifiedSinceIfMatchSuccessTest()
+        public async Task PreconditionIfUnmodifiedSinceIfMatchFailTest()
         {
             // Arrange
             this.Client.DefaultRequestHeaders.Add("If-Match", this.EntityTag.ToString());
@@ -694,13 +693,12 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
 
             // Act
             HttpResponseMessage response = await this.Client.GetAsync("/test/file/physical/true/true");
-            response.EnsureSuccessStatusCode();
 
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
-            Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
+            Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
+            Assert.AreEqual(string.Empty, responseString, "response is not empty");
             Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");

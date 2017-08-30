@@ -17,7 +17,6 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.FileProviders;
     using Microsoft.Net.Http.Headers;
 
     using ZNetCS.AspNetCore.ResumingFileResults.Infrastructure;
@@ -27,17 +26,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
     /// <summary>
     /// The resuming virtual file result.
     /// </summary>
-    public class ResumingVirtualFileResult : ResumingFileResult
+    public class ResumingVirtualFileResult : VirtualFileResult, IResumingFileResult
     {
-        #region Fields
-
-        /// <summary>
-        /// The file name.
-        /// </summary>
-        private string fileName;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -71,51 +61,23 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// The ETag header of the response.
         /// </param>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "OK")]
-        public ResumingVirtualFileResult(string fileName, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(contentType?.ToString(), etag)
+        public ResumingVirtualFileResult(string fileName, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(fileName, contentType)
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
-
-            this.FileName = fileName;
+            this.EntityTag = etag;
         }
 
         #endregion
 
         #region Public Properties
 
-        /// <summary>
-        /// Gets or sets the path to the file that will be sent back as the response.
-        /// </summary>
-        public string FileName
-        {
-            get
-            {
-                return this.fileName;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                this.fileName = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="IFileProvider"/> used to resolve paths.
-        /// </summary>
-        public IFileProvider FileProvider { get; set; }
+        /// <inheritdoc/>
+        public string FileInlineName { get; set; }
 
         #endregion
 
         #region Public Methods
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public override Task ExecuteResultAsync(ActionContext context)
         {
             if (context == null)

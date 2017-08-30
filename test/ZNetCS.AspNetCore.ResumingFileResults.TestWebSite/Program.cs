@@ -14,6 +14,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
     using System.IO;
 
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
 
     #endregion
 
@@ -35,7 +37,22 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
             IWebHost host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
+                .ConfigureAppConfiguration(
+                    (hostingContext, config) =>
+                    {
+                        var env = hostingContext.HostingEnvironment;
+                        config.SetBasePath(env.ContentRootPath)
+                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                            .AddEnvironmentVariables();
+                    })
+                .ConfigureLogging(
+                    (hostingContext, logging) =>
+                    {
+                        logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                        logging.AddConsole();
+                        logging.AddDebug();
+                    })
                 .UseStartup<Startup>()
                 .Build();
 

@@ -12,13 +12,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     #region Usings
 
     using System;
-    using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.FileProviders;
+    using Microsoft.AspNetCore.Mvc.Internal;
     using Microsoft.Extensions.Logging;
 
     #endregion
@@ -26,17 +24,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     /// <summary>
     /// The resuming virtual file result executor.
     /// </summary>
-    public class ResumingVirtualFileResultExecutor : ResumingFileResultExecutorBase
+    public class ResumingVirtualFileResultExecutor : VirtualFileResultExecutor
     {
-        #region Fields
-
-        /// <summary>
-        /// The hosting environment.
-        /// </summary>
-        private readonly IHostingEnvironment hostingEnvironment;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -48,15 +37,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// <param name="hostingEnvironment">
         /// The hosting environment.
         /// </param>
-        public ResumingVirtualFileResultExecutor(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment)
-            : base(CreateLogger<ResumingVirtualFileResultExecutor>(loggerFactory))
+        public ResumingVirtualFileResultExecutor(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment) : base(loggerFactory, hostingEnvironment)
         {
-            if (hostingEnvironment == null)
-            {
-                throw new ArgumentNullException(nameof(hostingEnvironment));
-            }
-
-            this.hostingEnvironment = hostingEnvironment;
         }
 
         #endregion
@@ -70,60 +52,23 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// The action context to access request and response.
         /// </param>
         /// <param name="result">
-        /// The action result to process.
+        /// The file result to process.
         /// </param>
-        /// <param name="cancellationToken">
-        /// The cancellation token to support cancellation.
-        /// </param>
-        public Task ExecuteAsync(ActionContext context, ResumingVirtualFileResult result, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task ExecuteAsync(ActionContext context, ResumingVirtualFileResult result)
         {
-            IFileProvider fileProvider = this.GetFileProvider(result);
-
-            string normalizedPath = result.FileName;
-            if (normalizedPath.StartsWith("~", StringComparison.Ordinal))
+            if (context == null)
             {
-                normalizedPath = normalizedPath.Substring(1);
+                throw new ArgumentNullException(nameof(context));
             }
 
-            IFileInfo fileInfo = fileProvider.GetFileInfo(normalizedPath);
-            if (fileInfo.Exists)
+            if (result == null)
             {
-                return this.ExecuteAsync(context, this.GetFileStream(fileInfo), result, cancellationToken);
+                throw new ArgumentNullException(nameof(result));
             }
 
-            throw new FileNotFoundException($"Could not find file: {result.FileName}");
-        }
+            ResumingFileHelper.SetContentDispositionHeaderInline(context, result);
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Gets read file stream from file info.
-        /// </summary>
-        /// <param name="fileInfo">
-        /// The file info to open stream.
-        /// </param>
-        protected virtual Stream GetFileStream(IFileInfo fileInfo)
-        {
-            return fileInfo.CreateReadStream();
-        }
-
-        /// <summary>
-        /// Gets file provider related to result or current hosting environment.
-        /// </summary>
-        /// <param name="result">
-        /// The result to find provider.
-        /// </param>
-        private IFileProvider GetFileProvider(ResumingVirtualFileResult result)
-        {
-            if (result.FileProvider != null)
-            {
-                return result.FileProvider;
-            }
-
-            result.FileProvider = this.hostingEnvironment.WebRootFileProvider;
-            return result.FileProvider;
+            return base.ExecuteAsync(context, result);
         }
 
         #endregion
