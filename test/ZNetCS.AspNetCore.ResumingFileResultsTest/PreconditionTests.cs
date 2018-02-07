@@ -45,7 +45,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -93,7 +93,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -164,7 +164,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != PreconditionFailed");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -187,7 +187,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -283,7 +283,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != OK");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -306,7 +306,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -329,7 +329,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -352,9 +352,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             string responseString = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "StatusCode != OK");
-            Assert.AreEqual("0123456789abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPGRSTUVWXYZ", responseString, "no full file");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
+            Assert.AreEqual(string.Empty, responseString, "no full file");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -377,7 +377,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -400,7 +400,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.NotModified, response.StatusCode, "StatusCode != NotModified");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -675,7 +675,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");
@@ -699,7 +699,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
             // Assert
             Assert.AreEqual(HttpStatusCode.PreconditionFailed, response.StatusCode, "StatusCode != PreconditionFailed");
             Assert.AreEqual(string.Empty, responseString, "response is not empty");
-            Assert.AreEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges != bytes");
+            Assert.AreNotEqual("bytes", response.Headers.AcceptRanges.ToString(), "AcceptRanges == bytes");
             Assert.AreEqual(this.EntityTag, response.Headers.ETag, "ETag != EntityTag");
             Assert.IsNull(response.Content.Headers.ContentRange, "Content-Range != null");
             Assert.AreEqual("attachment", response.Content.Headers.ContentDisposition.DispositionType, "DispositionType != attachment");

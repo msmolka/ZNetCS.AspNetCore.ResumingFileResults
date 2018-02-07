@@ -65,6 +65,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         public ResumingFileStreamResult(Stream fileStream, MediaTypeHeaderValue contentType, EntityTagHeaderValue etag = null) : base(fileStream, contentType)
         {
             this.EntityTag = etag;
+
+            // enable range processing by default
+            this.EnableRangeProcessing = true;
         }
 
         #endregion

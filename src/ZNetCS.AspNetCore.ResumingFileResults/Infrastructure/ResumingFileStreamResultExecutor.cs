@@ -15,7 +15,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Internal;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.Extensions.Logging;
 
     #endregion

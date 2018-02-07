@@ -16,7 +16,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Internal;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.Extensions.Logging;
 
     #endregion
