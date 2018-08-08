@@ -11,11 +11,10 @@
     <PackageTags>aspnetcore;aspnetcoremvc;actionresult;fileresult;resumingfileresult;ASP.NET;MVC;resuming;byterange;partial</PackageTags>
     <PackageProjectUrl>https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Update for compatibility with future ASP NET Core 2.1</PackageReleaseNotes>
+    <PackageReleaseNotes>Design extensibility for executors</PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults</RepositoryUrl>
-    <VersionPrefix>2.1.0</VersionPrefix>
-    <VersionSuffix>preview2-30045</VersionSuffix>
+    <VersionPrefix>2.1.2</VersionPrefix>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -39,11 +38,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.0-preview2-30045" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.0-preview2-30045" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0-preview2-30045" />
-    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.0-preview2-30045" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

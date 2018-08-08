@@ -16,10 +16,9 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Net.Http.Headers;
-
-    using ZNetCS.AspNetCore.ResumingFileResults.Infrastructure;
 
     #endregion
 
@@ -88,7 +87,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var executor = context.HttpContext.RequestServices.GetRequiredService<ResumingFileContentResultExecutor>();
+            var executor = context.HttpContext.RequestServices.GetRequiredService<IActionResultExecutor<ResumingFileContentResult>>();
             return executor.ExecuteAsync(context, this);
         }
 

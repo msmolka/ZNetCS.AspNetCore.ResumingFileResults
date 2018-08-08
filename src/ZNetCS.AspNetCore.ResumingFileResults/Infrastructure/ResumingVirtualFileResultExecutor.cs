@@ -24,7 +24,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     /// <summary>
     /// The resuming virtual file result executor.
     /// </summary>
-    public class ResumingVirtualFileResultExecutor : VirtualFileResultExecutor
+    public class ResumingVirtualFileResultExecutor : VirtualFileResultExecutor, IActionResultExecutor<ResumingVirtualFileResult>
     {
         #region Constructors and Destructors
 

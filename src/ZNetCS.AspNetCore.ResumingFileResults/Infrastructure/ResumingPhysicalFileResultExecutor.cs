@@ -23,7 +23,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     /// <summary>
     /// The resuming physical file result executor.
     /// </summary>
-    public class ResumingPhysicalFileResultExecutor : PhysicalFileResultExecutor
+    public class ResumingPhysicalFileResultExecutor : PhysicalFileResultExecutor, IActionResultExecutor<ResumingPhysicalFileResult>
     {
         #region Constructors and Destructors
 

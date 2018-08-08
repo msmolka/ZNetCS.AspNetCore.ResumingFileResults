@@ -59,10 +59,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         /// <param name="hostingEnvironment">
         /// The hosting environment.
         /// </param>
-        public TestController(IHostingEnvironment hostingEnvironment)
-        {
-            this.hostingEnvironment = hostingEnvironment;
-        }
+        public TestController(IHostingEnvironment hostingEnvironment) => this.hostingEnvironment = hostingEnvironment;
 
         #endregion
 
@@ -102,7 +99,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         }
 
         /// <summary>
-        /// The file.
+        /// The file head.
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
         [HttpHead("file")]
@@ -114,7 +111,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         }
 
         /// <summary>
-        /// The file.
+        /// The file put.
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
         [HttpPut("file")]
@@ -163,10 +160,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         /// The hello action.
         /// </summary>
         [HttpGet("hello")]
-        public IActionResult Hello()
-        {
-            return this.Content("Hello");
-        }
+        public IActionResult Hello() => this.Content("Hello");
 
         /// <summary>
         /// The physical file.

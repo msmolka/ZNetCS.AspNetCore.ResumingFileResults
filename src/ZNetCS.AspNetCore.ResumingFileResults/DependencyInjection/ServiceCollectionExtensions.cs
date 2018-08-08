@@ -13,6 +13,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.DependencyInjection
 
     using System;
 
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -43,10 +44,10 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services.TryAddSingleton<ResumingPhysicalFileResultExecutor>();
-            services.TryAddSingleton<ResumingVirtualFileResultExecutor>();
-            services.TryAddSingleton<ResumingFileStreamResultExecutor>();
-            services.TryAddSingleton<ResumingFileContentResultExecutor>();
+            services.TryAddSingleton<IActionResultExecutor<ResumingPhysicalFileResult>, ResumingPhysicalFileResultExecutor>();
+            services.TryAddSingleton<IActionResultExecutor<ResumingVirtualFileResult>, ResumingVirtualFileResultExecutor>();
+            services.TryAddSingleton<IActionResultExecutor<ResumingFileStreamResult>, ResumingFileStreamResultExecutor>();
+            services.TryAddSingleton<IActionResultExecutor<ResumingFileContentResult>, ResumingFileContentResultExecutor>();
 
             return services;
         }

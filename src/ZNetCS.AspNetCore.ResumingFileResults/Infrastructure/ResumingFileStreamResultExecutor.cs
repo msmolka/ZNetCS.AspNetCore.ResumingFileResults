@@ -23,7 +23,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
     /// <summary>
     /// The resuming file result executor.
     /// </summary>
-    public class ResumingFileStreamResultExecutor : FileStreamResultExecutor
+    public class ResumingFileStreamResultExecutor : FileStreamResultExecutor, IActionResultExecutor<ResumingFileStreamResult>
     {
         #region Constructors and Destructors
 
