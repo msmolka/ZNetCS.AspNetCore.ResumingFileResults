@@ -8,7 +8,7 @@ It allows provide `ETag` header as well as `Last-Modified` one. It also supports
 
 ## ASP.NET Core 2.0
 As from version 2.0 resuming is supported out of box inside ASP.NET Core. So all code related to resuming was removed. I left only part for `Content-Disposition` inline. Now all code relies on base .NET classes.
-Also support fro multipart request is removed. To support that I would have to copy a lot of original code, because currently there is no way to simple override some part of base classes.
+Also support for multipart request is removed. To support that I would have to copy a lot of original code, because currently there is no way to simple override some part of base classes.
 
 ## Installing 
 
