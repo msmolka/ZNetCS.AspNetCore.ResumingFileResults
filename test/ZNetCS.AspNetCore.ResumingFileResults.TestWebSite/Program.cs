@@ -17,7 +17,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
-    #endregion
+#if NETCOREAPP3_0
+    using Microsoft.Extensions.Hosting;
+#endif
+
+#endregion
 
     /// <summary>
     /// The program to un app.
@@ -26,6 +30,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
     {
         #region Public Methods
 
+#if !NETCOREAPP3_0
         /// <summary>
         /// The main entry to application.
         /// </summary>
@@ -58,7 +63,33 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
 
             host.Run();
         }
+#endif
 
+#if NETCOREAPP3_0
+        /// <summary>
+        /// The host builder.
+        /// </summary>
+        /// <param name="args">
+        /// The programs arguments.
+        /// </param>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+
+        /// <summary>
+        /// The main entry to application.
+        /// </summary>
+        /// <param name="args">
+        /// The programs arguments.
+        /// </param>
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+#endif
         #endregion
     }
 }

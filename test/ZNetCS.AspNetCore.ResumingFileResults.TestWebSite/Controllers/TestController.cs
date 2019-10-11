@@ -42,7 +42,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         /// <summary>
         /// The hosting environment.
         /// </summary>
+#if NETCOREAPP3_0
+        private readonly IWebHostEnvironment hostingEnvironment;
+#else
         private readonly IHostingEnvironment hostingEnvironment;
+#endif
 
         /// <summary>
         /// The last modified.
@@ -59,7 +63,14 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite.Controllers
         /// <param name="hostingEnvironment">
         /// The hosting environment.
         /// </param>
-        public TestController(IHostingEnvironment hostingEnvironment) => this.hostingEnvironment = hostingEnvironment;
+#if NETCOREAPP3_0
+        public TestController(IWebHostEnvironment hostingEnvironment)
+#else
+        public TestController(IHostingEnvironment hostingEnvironment)
+#endif
+        {
+            this.hostingEnvironment = hostingEnvironment;
+        }
 
         #endregion
 

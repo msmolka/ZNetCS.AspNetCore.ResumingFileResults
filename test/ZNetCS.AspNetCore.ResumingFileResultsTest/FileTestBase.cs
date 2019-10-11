@@ -37,6 +37,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
         protected FileTestBase()
         {
             var path = Path.GetDirectoryName(typeof(Startup).GetTypeInfo().Assembly.Location);
+
+            // ReSharper disable PossibleNullReferenceException
             var di = new DirectoryInfo(path).Parent.Parent.Parent;
 
             // Arrange
@@ -45,6 +47,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResultsTest
                     .UseStartup<Startup>()
                     .UseContentRoot(di.FullName));
 
+            // ReSharper restore PossibleNullReferenceException
             this.Client = this.Server.CreateClient();
         }
 

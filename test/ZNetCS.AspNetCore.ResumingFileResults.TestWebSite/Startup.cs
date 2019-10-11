@@ -14,10 +14,7 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
     using System.Diagnostics.CodeAnalysis;
 
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
-
-    using ZNetCS.AspNetCore.ResumingFileResults.DependencyInjection;
 
     #endregion
 
@@ -32,9 +29,17 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.TestWebSite
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "OK")]
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
+#if NETCOREAPP3_0
+
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpoints(o => o.MapControllers());
+#else
             app.UseMvc();
+#endif
         }
 
         /// <summary>

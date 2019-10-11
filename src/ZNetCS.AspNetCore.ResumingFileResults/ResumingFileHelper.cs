@@ -11,6 +11,8 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
 {
     #region Usings
 
+    using System;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Net.Http.Headers;
 
@@ -34,6 +36,16 @@ namespace ZNetCS.AspNetCore.ResumingFileResults
         /// </param>
         public static void SetContentDispositionHeaderInline(ActionContext context, IResumingFileResult result)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             if (string.IsNullOrEmpty(result.FileDownloadName))
             {
                 var contentDisposition = new ContentDispositionHeaderValue("inline");

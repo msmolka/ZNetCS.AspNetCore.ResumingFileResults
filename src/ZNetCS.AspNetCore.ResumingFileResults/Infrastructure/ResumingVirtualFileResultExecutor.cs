@@ -37,7 +37,11 @@ namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
         /// <param name="hostingEnvironment">
         /// The hosting environment.
         /// </param>
+#if NETCOREAPP3_0
+        public ResumingVirtualFileResultExecutor(ILoggerFactory loggerFactory, IWebHostEnvironment hostingEnvironment) : base(loggerFactory, hostingEnvironment)
+#else
         public ResumingVirtualFileResultExecutor(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment) : base(loggerFactory, hostingEnvironment)
+#endif
         {
         }
 

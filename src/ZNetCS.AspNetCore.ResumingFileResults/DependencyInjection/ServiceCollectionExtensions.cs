@@ -7,16 +7,17 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ZNetCS.AspNetCore.ResumingFileResults.DependencyInjection
+// ReSharper disable once CheckNamespace
+namespace Microsoft.Extensions.DependencyInjection
 {
     #region Usings
 
     using System;
 
     using Microsoft.AspNetCore.Mvc.Infrastructure;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
 
+    using ZNetCS.AspNetCore.ResumingFileResults;
     using ZNetCS.AspNetCore.ResumingFileResults.Infrastructure;
 
     #endregion
