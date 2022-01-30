@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ServiceCollectionExtensions.cs" company="Marcin Smółka zNET Computer Solutions">
-//   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
+// <copyright file="ServiceCollectionExtensions.cs" company="Marcin Smółka">
+//   Copyright (c) Marcin Smółka. All rights reserved.
 // </copyright>
 // <summary>
 //   The service collection extensions.
@@ -8,51 +8,50 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+#region Usings
+
+using System;
+
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+using ZNetCS.AspNetCore.ResumingFileResults;
+using ZNetCS.AspNetCore.ResumingFileResults.Infrastructure;
+
+#endregion
+
+/// <summary>
+/// The service collection extensions.
+/// </summary>
+public static class ServiceCollectionExtensions
 {
-    #region Usings
-
-    using System;
-
-    using Microsoft.AspNetCore.Mvc.Infrastructure;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
-
-    using ZNetCS.AspNetCore.ResumingFileResults;
-    using ZNetCS.AspNetCore.ResumingFileResults.Infrastructure;
-
-    #endregion
+    #region Public Methods
 
     /// <summary>
-    /// The service collection extensions.
+    /// Adds resuming file result services to the specified <see cref="IServiceCollection"/>.
     /// </summary>
-    public static class ServiceCollectionExtensions
+    /// <param name="services">
+    /// The <see cref="IServiceCollection"/> to add services to.
+    /// </param>
+    /// <returns>
+    /// The <see cref="IServiceCollection"/> so that additional calls can be chained.
+    /// </returns>
+    public static IServiceCollection AddResumingFileResult(this IServiceCollection services)
     {
-        #region Public Methods
-
-        /// <summary>
-        /// Adds resuming file result services to the specified <see cref="IServiceCollection"/>.
-        /// </summary>
-        /// <param name="services">
-        /// The <see cref="IServiceCollection"/> to add services to.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IServiceCollection"/> so that additional calls can be chained.
-        /// </returns>
-        public static IServiceCollection AddResumingFileResult(this IServiceCollection services)
+        if (services == null)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            services.TryAddSingleton<IActionResultExecutor<ResumingPhysicalFileResult>, ResumingPhysicalFileResultExecutor>();
-            services.TryAddSingleton<IActionResultExecutor<ResumingVirtualFileResult>, ResumingVirtualFileResultExecutor>();
-            services.TryAddSingleton<IActionResultExecutor<ResumingFileStreamResult>, ResumingFileStreamResultExecutor>();
-            services.TryAddSingleton<IActionResultExecutor<ResumingFileContentResult>, ResumingFileContentResultExecutor>();
-
-            return services;
+            throw new ArgumentNullException(nameof(services));
         }
 
-        #endregion
+        services.TryAddSingleton<IActionResultExecutor<ResumingPhysicalFileResult>, ResumingPhysicalFileResultExecutor>();
+        services.TryAddSingleton<IActionResultExecutor<ResumingVirtualFileResult>, ResumingVirtualFileResultExecutor>();
+        services.TryAddSingleton<IActionResultExecutor<ResumingFileStreamResult>, ResumingFileStreamResultExecutor>();
+        services.TryAddSingleton<IActionResultExecutor<ResumingFileContentResult>, ResumingFileContentResultExecutor>();
+
+        return services;
     }
+
+    #endregion
 }

@@ -1,57 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>A small package to allow using resume during transfering data over MVC application in ASP.NET Core.</Description>
-    <Copyright>Marcin Smółka zNET Computer Solutions</Copyright>
-    <Authors>Marcin Smółka</Authors>
-    <TargetFrameworks>net461;netstandard2.0;netcoreapp3.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>ZNetCS.AspNetCore.ResumingFileResults</AssemblyName>
-    <PackageId>ZNetCS.AspNetCore.ResumingFileResults</PackageId>
-    <PackageTags>aspnetcore;aspnetcoremvc;actionresult;fileresult;resumingfileresult;ASP.NET;MVC;resuming;byterange;partial</PackageTags>
-    <PackageProjectUrl>https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Cleanup dependencies</PackageReleaseNotes>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults</RepositoryUrl>
-    <VersionPrefix>2.2.0</VersionPrefix>
-    <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <!-- remove once tools are truly ready for NuGet's new 'license' element -->
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <CodeAnalysisRuleSet>..\..\CommonRuleSet.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>8.0</LangVersion>
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors />
+    <TreatWarningsAsErrors/>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="IPAddressRange" Version="4.2.0"/>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
   </ItemGroup>
 
 </Project>
+

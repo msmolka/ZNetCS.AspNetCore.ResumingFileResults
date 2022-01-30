@@ -1,72 +1,73 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ResumingFileStreamResultExecutor.cs" company="Marcin Smółka zNET Computer Solutions">
-//   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
+// <copyright file="ResumingFileStreamResultExecutor.cs" company="Marcin Smółka">
+//   Copyright (c) Marcin Smółka. All rights reserved.
 // </copyright>
 // <summary>
 //   The resuming file result executor.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure
+namespace ZNetCS.AspNetCore.ResumingFileResults.Infrastructure;
+
+#region Usings
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Logging;
+
+#endregion
+
+/// <summary>
+/// The resuming file result executor.
+/// </summary>
+[SuppressMessage("ReSharper", "ClassWithVirtualMembersNeverInherited.Global", Justification = "Public API")]
+public class ResumingFileStreamResultExecutor : FileStreamResultExecutor, IActionResultExecutor<ResumingFileStreamResult>
 {
-    #region Usings
+    #region Constructors and Destructors
 
-    using System;
-    using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Infrastructure;
-    using Microsoft.Extensions.Logging;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResumingFileStreamResultExecutor"/> class.
+    /// </summary>
+    /// <param name="loggerFactory">
+    /// The logger factory.
+    /// </param>
+    public ResumingFileStreamResultExecutor(ILoggerFactory loggerFactory) : base(loggerFactory)
+    {
+    }
 
     #endregion
 
+    #region Public Methods
+
     /// <summary>
-    /// The resuming file result executor.
+    /// Executes context asynchronously.
     /// </summary>
-    public class ResumingFileStreamResultExecutor : FileStreamResultExecutor, IActionResultExecutor<ResumingFileStreamResult>
+    /// <param name="context">
+    /// The action context to access request and response.
+    /// </param>
+    /// <param name="result">
+    /// The file result to process.
+    /// </param>
+    public virtual Task ExecuteAsync(ActionContext context, ResumingFileStreamResult result)
     {
-        #region Constructors and Destructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResumingFileStreamResultExecutor"/> class.
-        /// </summary>
-        /// <param name="loggerFactory">
-        /// The logger factory.
-        /// </param>
-        public ResumingFileStreamResultExecutor(ILoggerFactory loggerFactory) : base(loggerFactory)
+        if (context == null)
         {
+            throw new ArgumentNullException(nameof(context));
         }
 
-        #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Executes context asynchronously.
-        /// </summary>
-        /// <param name="context">
-        /// The action context to access request and response.
-        /// </param>
-        /// <param name="result">
-        /// The file result to process.
-        /// </param>
-        public virtual Task ExecuteAsync(ActionContext context, ResumingFileStreamResult result)
+        if (result == null)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (result == null)
-            {
-                throw new ArgumentNullException(nameof(result));
-            }
-
-            ResumingFileHelper.SetContentDispositionHeaderInline(context, result);
-
-            return base.ExecuteAsync(context, result);
+            throw new ArgumentNullException(nameof(result));
         }
 
-        #endregion
+        ResumingFileHelper.SetContentDispositionHeaderInline(context, result);
+
+        return base.ExecuteAsync(context, result);
     }
+
+    #endregion
 }
