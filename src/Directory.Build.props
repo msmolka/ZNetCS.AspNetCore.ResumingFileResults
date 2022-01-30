@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>ZNetCS.AspNetCore.IPFiltering</PackageId>
+    <PackageId>ZNetCS.AspNetCore.ResumingFileResults</PackageId>
     <PackageTags>aspnetcore;aspnetcoremvc;actionresult;fileresult;resumingfileresult;ASP.NET;MVC;resuming;byterange;partial</PackageTags>
     <PackageProjectUrl>https://github.com/msmolka/ZNetCS.AspNetCore.ResumingFileResults</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
