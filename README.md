@@ -28,7 +28,7 @@ When you install the package, it should be added to your `.csproj`. Alternativel
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="ZNetCS.AspNetCore.ResumingFileResults" Version="6.0.0" />
+    <PackageReference Include="ZNetCS.AspNetCore.ResumingFileResults" Version="6.0.1" />
 </ItemGroup>
 ```
 
